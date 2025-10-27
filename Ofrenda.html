@@ -6,25 +6,30 @@
     <style>
         body {
             font-family: sans-serif;
-            padding: 100spx;
+            padding: 100px;
         }
         #controls {
             margin-bottom: 10px;
         }
         table {
             border-collapse: collapse;
+            table-layout: fixed; /* para que las celdas respeten el ancho fijado */
+        }
+        /* El tamaño total del grid será 800x800px */
+        #pixelGrid {
+            width: 800px;
+            height: 800px;
         }
         td {
-            width: 10px;
-            height: 10px;
             border: 1px solid #ccc;
             padding: 0;
             box-sizing: border-box;
         }
         @media (max-width: 800px) {
-            td {
-                width: 6px;
-                height: 6px;
+            /* opcional: reducir total en pantallas pequeñas */
+            #pixelGrid {
+                width: 400px;
+                height: 400px;
             }
         }
     </style>
@@ -41,17 +46,28 @@
         const grid = document.getElementById('pixelGrid');
         const colorPicker = document.getElementById('colorPicker');
         const clearButton = document.getElementById('clearButton');
-        const size = 300;
+
+        // Número de celdas por fila/columna
+        const size = 100; // cambiado a 100x100
+
+        // Tamaño total del grid en píxeles (coincide con CSS). Para responsive cambia según media query.
+        const totalSize = 800;
 
         // Cargar colores guardados
         const savedColors = JSON.parse(localStorage.getItem('pixelArtGrid') || '[]');
         let cellIndex = 0;
+
+        // Calcular tamaño de cada celda para que el grid total sea totalSize x totalSize
+        const cellSize = Math.max(1, Math.floor(totalSize / size));
 
         // Crear la cuadrícula
         for (let i = 0; i < size; i++) {
             const row = grid.insertRow();
             for (let j = 0; j < size; j++) {
                 const cell = row.insertCell();
+
+                // Aplicar tamaño calculado
+                cell.style.width = cell.style.height = cellSize + 'px';
 
                 // Restaurar color si existe
                 if (savedColors[cellIndex]) {
